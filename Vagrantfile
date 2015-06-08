@@ -9,6 +9,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.box = "chef/debian-7.4"
   config.vm.network "forwarded_port", guest: 9200, host: 9201
+  config.vm.network "forwarded_port", guest: 5601, host: 5602
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "playbook.yml"
   end

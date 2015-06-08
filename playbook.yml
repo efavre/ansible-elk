@@ -5,8 +5,6 @@
     apt: name=openjdk-7-jre state=present update_cache=yes
     become: yes
     become_method: sudo
-  - name: check java version
-    shell: java -version
   - name: add elastic.co apt public key as sudo
     apt_key: url=https://packages.elastic.co/GPG-KEY-elasticsearch state=present
     become: yes
@@ -21,5 +19,23 @@
     become_method: sudo
   - name: start elasticsearch service as sudo
     service: name=elasticsearch state=started
+    become: yes
+    become_method: sudo
+  - name: download kibana archive
+    get_url: url=https://download.elasticsearch.org/kibana/kibana/kibana-4.0.2-linux-x64.tar.gz dest=~/
+  - name: create kibana directory
+    file: path=/srv/http state=directory
+    become: yes
+    become_method: sudo
+  - name: untar kibana
+    unarchive: src=/home/vagrant/kibana-4.0.2-linux-x64.tar.gz dest=/srv/http copy=no
+    become: yes
+    become_method: sudo
+  - name: copy kibana service file
+    copy: src=resources/kibana-service dest=/etc/init.d/kibana owner=root group=root mode=755
+    become: yes
+    become_method: sudo
+  - name: start kibana service as sudo
+    service: name=kibana state=started
     become: yes
     become_method: sudo
