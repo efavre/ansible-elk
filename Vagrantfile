@@ -12,6 +12,8 @@ Vagrant.configure(2) do |config|
   config.vm.network "forwarded_port", guest: 5601, host: 5602
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "playbook.yml"
+    ansible.inventory_path = "/etc/ansible/hosts"
+    ansible.limit = "elk"
   end
 
 end

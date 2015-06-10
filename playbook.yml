@@ -1,10 +1,12 @@
 ---
 - hosts: elk
   tasks:
-  - name: install jave openJdk 7 (jre)
+
+  - name: install java openJdk 7 (jre)
     apt: name=openjdk-7-jre state=present update_cache=yes
     become: yes
     become_method: sudo
+
   - name: add elastic.co apt public key as sudo
     apt_key: url=https://packages.elastic.co/GPG-KEY-elasticsearch state=present
     become: yes
@@ -17,10 +19,19 @@
     apt: name=elasticsearch state=present update_cache=yes
     become: yes
     become_method: sudo
+  - name: copy elasticsearch config file
+    copy: src=resources/elasticsearch.lp.yml dest=/etc/elasticsearch/elasticsearch.yml owner=root group=root mode=644
+    become: yes
+    become_method: sudo
+  - name: create elasticsearch indices repository
+    file: path=/var/lib/elasticsearch/data-eboutique-v1.0.0 state=directory owner=elasticsearch group=elasticsearch mode=755
+    become: yes
+    become_method: sudo
   - name: start elasticsearch service as sudo
     service: name=elasticsearch state=started
     become: yes
     become_method: sudo
+
   - name: download kibana archive
     get_url: url=https://download.elasticsearch.org/kibana/kibana/kibana-4.0.2-linux-x64.tar.gz dest=~/
   - name: create kibana directory
@@ -29,6 +40,10 @@
     become_method: sudo
   - name: untar kibana
     unarchive: src=/home/vagrant/kibana-4.0.2-linux-x64.tar.gz dest=/srv/http copy=no
+    become: yes
+    become_method: sudo
+  - name: copy kibana config file
+    copy: src=resources/kibana.lp.yml dest=/srv/http/kibana-4.0.2-linux-x64/config/kibana.yml owner=root group=root mode=644
     become: yes
     become_method: sudo
   - name: copy kibana service file
