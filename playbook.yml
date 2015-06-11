@@ -24,7 +24,7 @@
     become: yes
     become_method: sudo
   - name: create elasticsearch indices repository
-    file: path=/var/lib/elasticsearch/data-eboutique-v1.0.0 state=directory owner=elasticsearch group=elasticsearch mode=755
+    file: path=/var/lib/elasticsearch/data-v1.0.0 state=directory owner=elasticsearch group=elasticsearch mode=755
     become: yes
     become_method: sudo
   - name: start elasticsearch service as sudo
